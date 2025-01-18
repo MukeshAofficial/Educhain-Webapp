@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background-size: cover;
+   background-repeat: no-repeat;
+  background-position: center center;
+
+
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.dark {
+     background-color: #1a202c;
+     color: white;
+}
+
+.light{
+    color: black;
+    background-color: white;
+}
+
+
+/* Additional dark mode customization */
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark p, .dark label, .dark span{
+  color: #edf2f7; /* Light text color for dark theme */
+}
+
+
+.dark input, .dark textarea, .dark select{
+  background-color: #4a5568;
+  color: #edf2f7;
+  border-color: #718096;
+
+}
+.dark input:focus, .dark textarea:focus, .dark select:focus{
+  border-color: #64748b;
+
+}
+.dark button{
+   background-color: #718096;
+}
+.dark button:hover{
+     background-color: #64748b;
+}

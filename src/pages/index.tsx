@@ -34,8 +34,9 @@ const Home: React.FC = () => {
 
 
     // Document State
-    const [docSourceType, setDocSourceType] = useState('pdf');
-    const [docContent, setDocContent] = useState('');
+    const [docSourceType, setDocSourceType] = useState<'pdf' | 'url' | 'text'>('pdf');
+    const [docContent, setDocContent] = useState<string | null>(null);
+     const [docPdfPreview, setDocPdfPreview] = useState<string | null>(null);
     const [docNumQuestions, setDocNumQuestions] = useState(3);
     const [docLearningObjective, setDocLearningObjective] = useState('');
     const [docDifficultyLevel, setDocDifficultyLevel] = useState('');
@@ -48,6 +49,23 @@ const Home: React.FC = () => {
 
     const handleImageUpload = (file: File) => {
         setUploadedImage(file);
+    };
+
+   const handlePdfUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+
+           const reader = new FileReader();
+                reader.onload = (event) => {
+                     setDocContent(event.target?.result as string)
+                      setDocPdfPreview(event.target?.result as string)
+                };
+             reader.readAsDataURL(file);
+
+        }else{
+           setDocContent(null)
+           setDocPdfPreview(null)
+        }
     };
 
     const handleSubmit = async (type: string) => {
@@ -85,7 +103,7 @@ const Home: React.FC = () => {
                         response = await axios.post('http://localhost:8000/api/image-doubt', formData, {
                             headers: { 'Content-Type': 'multipart/form-data' },
                         });
-                        setSolvedDoubt(response.data.solution)
+                         setSolvedDoubt(response.data)
                     } else {
                         console.log("Please upload an image")
                         alert("Please Upload an image")
@@ -269,7 +287,7 @@ const Home: React.FC = () => {
                             >
                                 Solve Doubt
                             </button>
-                            {solvedDoubt && (
+                           {solvedDoubt && (
                                 <div className="mt-4 bg-white dark:bg-dark-primary p-4 rounded shadow">
                                     <h3 className="text-xl font-semibold mb-2 dark:text-white">Solution</h3>
                                     <p className="mb-2 dark:text-white"><span className="font-medium dark:text-gray-400">Explanation:</span> {solvedDoubt.explanation}</p>
@@ -288,7 +306,6 @@ const Home: React.FC = () => {
                                     {solvedDoubt.additional_notes && (
                                         <p className="mb-2 dark:text-white"><span className="font-medium dark:text-gray-400">Additional Notes:</span> {solvedDoubt.additional_notes}</p>
                                     )}
-
                                 </div>
                             )}
                         </AnimatedSection>
@@ -301,38 +318,35 @@ const Home: React.FC = () => {
                                 label="Select Source Type"
                                 type="select"
                                 value={docSourceType}
-                                onChange={(e) => setDocSourceType(e.target.value)}
+                                onChange={(e) => setDocSourceType(e.target.value as 'pdf' | 'url' | 'text')}
                                 options={["pdf", "url", "text"]}
                                 id="doc-type"
                             />
-                            {docSourceType === 'pdf' && (
+                           {docSourceType === 'pdf' && (
                                 <div className="mb-4">
-                                    <label htmlFor="doc-pdf" className="block mb-2 text-sm font-medium dark:text-white">
-                                          Upload PDF File
-                                    </label>
-                                        <input
-                                            type="file"
-                                           id="doc-pdf"
-                                         onChange={(e) => {
-                                           if (e.target.files && e.target.files[0]) {
-                                                const file = e.target.files[0];
-                                                const reader = new FileReader();
-                                                reader.onload = (event) => {
-                                                   setDocContent(event.target?.result as string)
-                                                };
-                                                reader.readAsDataURL(file);
-                                          }
-                                      }}
-
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                />
+                                   <label htmlFor="doc-pdf" className="block mb-2 text-sm font-medium dark:text-white">
+                                           Upload PDF File
+                                   </label>
+                                   <input
+                                       type="file"
+                                       id="doc-pdf"
+                                     onChange={handlePdfUpload}
+                                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    />
+                                     {docPdfPreview && (
+                                        <div className="mt-2">
+                                            <iframe src={docPdfPreview}
+                                            title="PDF Preview"
+                                            className="max-h-40  shadow rounded" />
+                                          </div>
+                                      )}
                                 </div>
-                            )}
+                             )}
                             {docSourceType === 'url' && (
                                 <InputComponent
                                     label="Enter URL"
                                     type="text"
-                                    value={docContent}
+                                    value={docContent || ''}
                                     onChange={(e) => setDocContent(e.target.value)}
                                     placeholder="Enter URL"
                                     id="doc-url"
@@ -342,7 +356,7 @@ const Home: React.FC = () => {
                                 <InputComponent
                                     label="Enter Text Content"
                                     type="textarea"
-                                    value={docContent}
+                                    value={docContent || ''}
                                     onChange={(e) => setDocContent(e.target.value)}
                                     placeholder="Enter Text"
                                     id="doc-text"

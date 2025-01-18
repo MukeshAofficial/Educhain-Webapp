@@ -23,7 +23,7 @@ export interface Flashcard {
 }
 
 export interface SolvedDoubt {
-  explanation: string;
-  steps?: string[];
-  additional_notes?: string;
+    explanation: string;
+    steps?: string[];
+    additional_notes?: string;
 }

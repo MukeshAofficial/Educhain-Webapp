@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   darkMode: 'class', // Enable dark mode
   theme: {
@@ -41,4 +41,6 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};
+
+export default config;
